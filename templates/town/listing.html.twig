@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Liste des villes
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div>
+            <h1>Villes du monde !</h1>
+            <p>Bonjour {{ app.user. getEmail() }}</p>
+        </div>
+    
+        <table id="example" class="table table-striped table-bordered" style="width:100%" data-order='[[ 1, "asc" ]]' data-page-length='20'>
+            <thead>
+                <tr>
+                    <th>Ville</th>
+                    <th>Pays</th>
+                    <th>Continent</th>
+                    <th>Région</th>
+                    <th>Population</th>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <th><a href="{{ path('town_create') }}" class="btn btn-outline-secondary" title="add">Ajouter</a></th>
+                    {% endif %}
+                    <th><a href="{{ path('app_logout') }}" class="btn btn-outline-secondary">Déconnexion</a></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if town is defined %}
+                    {% for city in town %}
+                        <tr>
+                            <th scope="row">{{ city.name }}</th>
+                            <td>{{ city.countrycode.name}}</td>
+                            <td>{{ city.countrycode.Continent}}</td>
+                            <td>{{ city.district}}</td>
+                            <td>{{ city.population }}</td>
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <td><a href="{{ path('town_edit',{'id': city.id}) }}" class="btn btn-outline-info" title="edit">Editer</a></td>
+                            <td><a href="{{ path('town_delete', {'id': city.id}) }}" class="btn btn-outline-danger" title="delete">Supprimer</a></td>
+                            {% else %}
+                            <td></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Ville</th>
+                    <th>Pays</th>
+                    <th>Continent</th>
+                    <th>Région</th>
+                    <th>Population</th>
+                    <th></th>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <th></th>
+                    {% endif %}
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+	<script>
+		$(document).ready(function () {
+            $('#example').DataTable({
+            "lengthMenu": [ [5, 10, 15, 20] , [5, 10, 15, 20]],
+            "language": {
+                "sEmptyTable":     "Aucune donnée disponible dans le tableau",
+    "sInfo":           "Affichage de l'élément _START_ à _END_ sur _TOTAL_ éléments",
+    "sInfoEmpty":      "Affichage de l'élément 0 à 0 sur 0 élément",
+    "sInfoFiltered":   "(filtré à partir de _MAX_ éléments au total)",
+    "sInfoPostFix":    "",
+    "sInfoThousands":  ",",
+    "sLengthMenu":     "Afficher _MENU_ éléments",
+    "sLoadingRecords": "Chargement...",
+    "sProcessing":     "Traitement...",
+    "sSearch":         "Rechercher :",
+    "sZeroRecords":    "Aucun élément correspondant trouvé",
+    "oPaginate": {
+        "sFirst":    "Premier",
+        "sLast":     "Dernier",
+        "sNext":     "Suivant",
+        "sPrevious": "Précédent"
+    },
+    "oAria": {
+        "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
+        "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+    },
+    "select": {
+            "rows": {
+                "_": "%d lignes sélectionnées",
+                "0": "Aucune ligne sélectionnée",
+                "1": "1 ligne sélectionnée"
+            } 
+    }
+            }
+        });
+        });
+	</script>
+{% endblock %}
